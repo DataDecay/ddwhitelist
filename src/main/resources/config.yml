@@ -1,0 +1,7 @@
+enabled: false
+messages:
+  whitelist_on: "&aWhitelist is now &2enabled"
+  whitelist_off: "&cWhitelist is now &4disabled"
+  whitelist_enabled: "&aWhitelist is currently &2enabled"
+  whitelist_disabled: "&cWhitelist is currently &4disabled"
+  not_whitelisted: "&cThis server is being worked on!"
