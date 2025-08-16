@@ -1,0 +1,21 @@
+name: DDWhitelist
+main: dev.datadecay.ddwhitelist.DDWhitelist
+version: 1.0.0
+api-version: 1.20
+author: DataDecay
+description: A simple LuckPemrs based whitelist plugin.
+
+commands:
+  ddwhitelist:
+    description: Manage the whitelist
+    aliases: [ddwl]
+    usage: /<command> <on|off|status|help>
+    permission: ddwhitelist.toggle
+
+permissions:
+  ddwhitelist.toggle:
+    description: Allows toggling whitelist
+    default: op
+  ddwhitelist.allowjoin:
+    description: Allows a player to join when whitelist is enabled
+    default: op
