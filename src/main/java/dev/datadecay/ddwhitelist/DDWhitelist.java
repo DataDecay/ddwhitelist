@@ -2,6 +2,8 @@ package dev.datadecay.ddwhitelist;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,10 +15,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import me.clip.placeholderapi.PlaceholderAPI;
 
 public final class DDWhitelist extends JavaPlugin implements Listener {
 
     private boolean whitelistEnabled;
+    private String whitelistMessage;
+    private String kickMessage;
 
     @Override
     public void onEnable() {
@@ -40,7 +45,10 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     public void loadConfigValues() {
         FileConfiguration config = getConfig();
         whitelistEnabled = config.getBoolean("whitelist-enabled", false);
+        whitelistMessage = config.getString("whitelist-message", "%player_name% tried to join but is not whitelisted!");
+        kickMessage = config.getString("kick-message", "This server is being worked on.");
     }
+
 
     public boolean isWhitelistEnabled() {
         return whitelistEnabled;
@@ -58,13 +66,21 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
         if (whitelistEnabled && !player.hasPermission("ddwhitelist.allowjoin")) {
             e.setJoinMessage(null);
 
-            Component kickMessage = Component.text("This server is being worked on!", NamedTextColor.RED);
-            Bukkit.getScheduler().runTaskLater(this, () -> player.kick(kickMessage), 2L);
+            // Replace placeholder
+            String msg = whitelistMessage.replace("%player_name%", player.getName());
 
-            Component broadcast = Component.text(player.getName() + " tried to join but is not whitelisted!", NamedTextColor.RED);
-            Bukkit.getServer().broadcast(broadcast);
+            // If PlaceholderAPI is installed, replace placeholders
+            if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                msg = PlaceholderAPI.setPlaceholders(player, msg);
+            }
+
+            getServer().broadcastMessage(msg);
+            Bukkit.getScheduler().runTaskLater(this, () -> player.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage)), 2L);
+
+            getLogger().info(player.getName() + " is not whitelisted and tried to join!");
         }
     }
+
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {

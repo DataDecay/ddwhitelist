@@ -1,9 +1,10 @@
 name: DDWhitelist
 main: dev.datadecay.ddwhitelist.DDWhitelist
-version: 1.0.0
+version: 1.2.5
 api-version: 1.20
 author: DataDecay
 description: A simple LuckPemrs based whitelist plugin.
+softdepend: [PlaceholderAPI, Essentials]
 
 commands:
   ddwhitelist:
