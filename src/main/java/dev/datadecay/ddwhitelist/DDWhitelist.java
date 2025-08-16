@@ -1,7 +1,8 @@
 package dev.datadecay.ddwhitelist;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -56,8 +57,12 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
         Player player = e.getPlayer();
         if (whitelistEnabled && !player.hasPermission("ddwhitelist.allowjoin")) {
             e.setJoinMessage(null);
-            Bukkit.getScheduler().runTaskLater(this, () -> player.kick("This server is being worked on!"), 2L);
-            Bukkit.getLogger().info(player.getName() + " is not whitelisted and tried to join!");
+
+            Component kickMessage = Component.text("This server is being worked on!", NamedTextColor.RED);
+            Bukkit.getScheduler().runTaskLater(this, () -> player.kick(kickMessage), 2L);
+
+            Component broadcast = Component.text(player.getName() + " tried to join but is not whitelisted!", NamedTextColor.RED);
+            Bukkit.getServer().broadcast(broadcast);
         }
     }
 
@@ -82,7 +87,7 @@ class DDWhitelistCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /ddwhitelist <on|off|status|reload|help>");
+            sender.sendMessage(Component.text("Usage: /ddwhitelist <on|off|status|reload|help>", NamedTextColor.YELLOW));
             return true;
         }
 
@@ -90,28 +95,30 @@ class DDWhitelistCommand implements CommandExecutor {
         switch (arg) {
             case "on":
                 plugin.setWhitelistEnabled(true);
-                Bukkit.broadcastMessage(ChatColor.GREEN + "Whitelist is now enabled");
+                Bukkit.getServer().broadcast(Component.text("Whitelist is now enabled", NamedTextColor.GREEN));
                 break;
             case "off":
                 plugin.setWhitelistEnabled(false);
-                Bukkit.broadcastMessage(ChatColor.RED + "Whitelist is now disabled");
+                Bukkit.getServer().broadcast(Component.text("Whitelist is now disabled", NamedTextColor.RED));
                 break;
             case "status":
-                sender.sendMessage("Whitelist is currently " + (plugin.isWhitelistEnabled() ? ChatColor.GREEN + "enabled" : ChatColor.RED + "disabled"));
+                Component status = Component.text("Whitelist is currently ", NamedTextColor.WHITE)
+                        .append(Component.text(plugin.isWhitelistEnabled() ? "enabled" : "disabled", plugin.isWhitelistEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED));
+                sender.sendMessage(status);
                 break;
             case "reload":
                 plugin.reloadConfig();
                 plugin.loadConfigValues();
-                sender.sendMessage(ChatColor.AQUA + "DDWhitelist config reloaded.");
+                sender.sendMessage(Component.text("DDWhitelist config reloaded.", NamedTextColor.AQUA));
                 break;
             case "help":
             default:
-                sender.sendMessage(ChatColor.YELLOW + "DDWhitelist Commands:");
-                sender.sendMessage(ChatColor.GREEN + "/ddwhitelist on " + ChatColor.WHITE + "- Enable the whitelist");
-                sender.sendMessage(ChatColor.GREEN + "/ddwhitelist off " + ChatColor.WHITE + "- Disable the whitelist");
-                sender.sendMessage(ChatColor.GREEN + "/ddwhitelist status " + ChatColor.WHITE + "- Check whitelist status");
-                sender.sendMessage(ChatColor.GREEN + "/ddwhitelist reload " + ChatColor.WHITE + "- Reload the config");
-                sender.sendMessage(ChatColor.GREEN + "/ddwhitelist help " + ChatColor.WHITE + "- Show this help message");
+                sender.sendMessage(Component.text("DDWhitelist Commands:", NamedTextColor.YELLOW));
+                sender.sendMessage(Component.text("/ddwhitelist on - Enable the whitelist", NamedTextColor.GREEN));
+                sender.sendMessage(Component.text("/ddwhitelist off - Disable the whitelist", NamedTextColor.GREEN));
+                sender.sendMessage(Component.text("/ddwhitelist status - Check whitelist status", NamedTextColor.GREEN));
+                sender.sendMessage(Component.text("/ddwhitelist reload - Reload the config", NamedTextColor.GREEN));
+                sender.sendMessage(Component.text("/ddwhitelist help - Show this help message", NamedTextColor.GREEN));
                 break;
         }
         return true;

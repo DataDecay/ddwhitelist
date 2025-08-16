@@ -2,6 +2,8 @@ package dev.datadecay.ddwhitelist.listeners;
 
 import dev.datadecay.ddwhitelist.DDWhitelist;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,6 +21,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
         if (plugin.getConfig().getBoolean("enabled") && !player.hasPermission("ddwhitelist.allowjoin")) {
             event.setJoinMessage(null);
 
@@ -27,8 +30,12 @@ public class PlayerListener implements Listener {
                 msg = PlaceholderAPI.setPlaceholders(player, msg);
             }
 
-            plugin.getServer().broadcastMessage(msg);
-            player.kickPlayer("§cThis server is currently whitelisted!");
+            // Convert to Component
+            Component broadcast = Component.text(msg, NamedTextColor.RED);
+            plugin.getServer().broadcast(broadcast);
+
+            // Kick player with Component
+            player.kick(Component.text("This server is currently whitelisted!", NamedTextColor.RED));
         }
     }
 
