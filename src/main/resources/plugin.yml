@@ -1,6 +1,6 @@
 name: DDWhitelist
 main: dev.datadecay.ddwhitelist.DDWhitelist
-version: 1.3.1
+version: 1.3.2
 api-version: 1.20
 author: DataDecay
 description: A simple permission based whitelist plugin.
