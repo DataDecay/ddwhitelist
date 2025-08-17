@@ -1,23 +1,12 @@
 package dev.datadecay.ddwhitelist;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 import dev.datadecay.ddwhitelist.commands.DDWhitelistCommand;
+import dev.datadecay.ddwhitelist.listeners.PlayerListener;
 
-import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.clip.placeholderapi.PlaceholderAPI;
-
 
 public final class DDWhitelist extends JavaPlugin implements Listener {
 
@@ -26,7 +15,9 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     private String kickMessage;
     private String serverName;
     private String globalPerm = "ddwhitelist.allowjoin";
+    private String togglePerm = "ddwhitelist.toggle";
     private String serverPerm = "ddwhitelist.allowjoin"; // Set later
+    
 
     @Override
     public void onEnable() {
@@ -34,6 +25,7 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
         loadConfigValues();
         this.getCommand("ddwhitelist").setExecutor(new DDWhitelistCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getLogger().info("DDWhitelist enabled. Whitelist is " + (whitelistEnabled ? "enabled" : "disabled"));
     }
 
@@ -94,6 +86,14 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     
     public String getServerPerm() {
     	return serverPerm;
+    }
+    
+    public String getTogglePerm() {
+    	return togglePerm;
+    }
+    
+    public String getVersion() {
+    	return getPluginMeta().getVersion();
     }
     
 }

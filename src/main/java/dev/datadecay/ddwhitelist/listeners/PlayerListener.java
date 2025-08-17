@@ -3,21 +3,14 @@ package dev.datadecay.ddwhitelist.listeners;
 import dev.datadecay.ddwhitelist.DDWhitelist;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PlayerListener implements Listener {
 
@@ -30,6 +23,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
+        //plugin.getLogger().info(Boolean.toString(player.hasPermission(plugin.getGlobalPerm())));
+        //plugin.getLogger().info(Boolean.toString(player.hasPermission(plugin.getServerPerm())));
+        //plugin.getLogger().info(Boolean.toString(player.hasPermission(plugin.getTogglePerm())));
+
         if (plugin.isWhitelistEnabled() && !(player.hasPermission(plugin.getGlobalPerm()) || player.hasPermission(plugin.getServerPerm()))) {
             e.setJoinMessage(null);
             String msg = plugin.getWhitelistMessage();
