@@ -3,6 +3,7 @@ package dev.datadecay.ddwhitelist;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import dev.datadecay.ddwhitelist.commands.DDWhitelistCommand;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import me.clip.placeholderapi.PlaceholderAPI;
+
 
 public final class DDWhitelist extends JavaPlugin implements Listener {
 
@@ -67,35 +69,23 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     public boolean isWhitelistEnabled() {
         return whitelistEnabled;
     }
+    
+    public String getWhitelistMessage() {
+        return whitelistMessage;
+    }
+
+    public String getKickMessage() {
+        return kickMessage;
+    }
+    
+    public String getServerName() {
+        return serverName;
+    }
 
     public void setWhitelistEnabled(boolean enabled) {
         whitelistEnabled = enabled;
         getConfig().set("whitelist-enabled", enabled);
         saveConfig();
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-        if (whitelistEnabled && !(player.hasPermission(globalPerm) || player.hasPermission(serverPerm))) {
-            e.setJoinMessage(null);
-            String msg = whitelistMessage;
-            msg = PlaceholderAPI.setPlaceholders(player, msg);
-            Component componentMsg = LegacyComponentSerializer.legacyAmpersand().deserialize(msg);
-            getServer().broadcast(componentMsg);
-            Bukkit.getScheduler().runTaskLater(this, () -> player.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage)), 2L);
-
-            getLogger().info(player.getName() + " is not whitelisted and tried to join!");
-        }
-    }
-
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        if (whitelistEnabled && !(player.hasPermission(globalPerm) || player.hasPermission(serverPerm))) {
-            e.setQuitMessage(null);
-        }
     }
     
     public String getGlobalPerm() {
@@ -105,56 +95,6 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     public String getServerPerm() {
     	return serverPerm;
     }
+    
 }
 
-// Command handler
-class DDWhitelistCommand implements CommandExecutor {
-
-    private final DDWhitelist plugin;
-
-    public DDWhitelistCommand(DDWhitelist plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 1) {
-            sender.sendMessage(Component.text("Usage: /ddwhitelist <on|off|status|reload|help>", NamedTextColor.YELLOW));
-            return true;
-        }
-
-        String arg = args[0].toLowerCase();
-        switch (arg) {
-            case "on":
-                plugin.setWhitelistEnabled(true);
-                Bukkit.getServer().broadcast(Component.text("Whitelist is now enabled", NamedTextColor.GREEN));
-                break;
-            case "off":
-                plugin.setWhitelistEnabled(false);
-                Bukkit.getServer().broadcast(Component.text("Whitelist is now disabled", NamedTextColor.RED));
-                break;
-            case "status":
-                Component status = Component.text("Whitelist is currently ", NamedTextColor.WHITE)
-                        .append(Component.text(plugin.isWhitelistEnabled() ? "enabled" : "disabled", plugin.isWhitelistEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED));
-                sender.sendMessage(status);
-                sender.sendMessage(Component.text("Per-Server permission: ", NamedTextColor.GRAY)
-                        .append(Component.text(plugin.getServerPerm(), NamedTextColor.YELLOW)));
-                break;
-            case "reload":
-                plugin.reloadConfig();
-                plugin.loadConfigValues();
-                sender.sendMessage(Component.text("DDWhitelist config reloaded.", NamedTextColor.AQUA));
-                break;
-            case "help":
-            default:
-                sender.sendMessage(Component.text("Commands:", NamedTextColor.YELLOW));
-                sender.sendMessage(Component.text("/ddwhitelist on - Enable the whitelist", NamedTextColor.GREEN));
-                sender.sendMessage(Component.text("/ddwhitelist off - Disable the whitelist", NamedTextColor.GREEN));
-                sender.sendMessage(Component.text("/ddwhitelist status - Check whitelist status", NamedTextColor.GREEN));
-                sender.sendMessage(Component.text("/ddwhitelist reload - Reload the config", NamedTextColor.GREEN));
-                sender.sendMessage(Component.text("/ddwhitelist help - Show this help message", NamedTextColor.GREEN));
-                break;
-        }
-        return true;
-    }
-}
