@@ -17,3 +17,5 @@ DDWhitelist is a small whitelist plugin for allowing developers access to a serv
 | `ddwhitelist.allowjoin` | Allow joining all servers |
 | `ddwhitelist.allowjoin.<server-name>` | Allow joining a specific server |
 | `ddwhitelist.toggle` | Allow toggling whitelist |
+
+[Spigot](https://www.spigotmc.org/resources/ddwhitelist.128088/)
