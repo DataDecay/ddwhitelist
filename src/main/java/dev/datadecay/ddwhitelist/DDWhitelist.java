@@ -16,7 +16,7 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     private String serverName;
     private String globalPerm = "ddwhitelist.allowjoin";
     private String togglePerm = "ddwhitelist.toggle";
-    private String serverPerm = "";
+    private String serverPerm = ""; // This is set later.
     
 
     @Override
