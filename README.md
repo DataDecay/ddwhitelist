@@ -14,5 +14,6 @@ DDWhitelist is a small whitelist plugin for allowing developers access to a serv
 ## Permissions
 | Perm | Use |
 |------|-----|
-| `ddwhitelist.allowjoin` | Allow joining |
+| `ddwhitelist.allowjoin` | Allow joining all servers |
+| `ddwhitelist.allowjoin.<server-name>` | Allow joining a specific server |
 | `ddwhitelist.toggle` | Allow toggling whitelist |

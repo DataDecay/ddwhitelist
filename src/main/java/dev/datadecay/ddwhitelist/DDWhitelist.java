@@ -22,6 +22,9 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     private boolean whitelistEnabled;
     private String whitelistMessage;
     private String kickMessage;
+    private String serverName;
+    private String globalPerm = "ddwhitelist.allowjoin";
+    private String serverPerm = "ddwhitelist.allowjoin"; // Set later, don't worry!
 
     @Override
     public void onEnable() {
@@ -47,6 +50,8 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
         whitelistEnabled = config.getBoolean("whitelist-enabled", false);
         whitelistMessage = config.getString("whitelist-message", "%player_name% tried to join but is not whitelisted!");
         kickMessage = config.getString("kick-message", "This server is being worked on.");
+        serverName = config.getString("server-name", "survival");
+        serverPerm = "ddwhitelist.allowjoin." + serverName;
     }
 
 
@@ -63,17 +68,12 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        if (whitelistEnabled && !player.hasPermission("ddwhitelist.allowjoin")) {
+        if (whitelistEnabled && !(player.hasPermission(globalPerm) || player.hasPermission(serverPerm))) {
             e.setJoinMessage(null);
 
             // Replace placeholder
-            String msg = whitelistMessage.replace("%player_name%", player.getName());
-
-            // If PlaceholderAPI is installed, replace placeholders
-            if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                msg = PlaceholderAPI.setPlaceholders(player, msg);
-            }
-
+            String msg = whitelistMessage;
+            msg = PlaceholderAPI.setPlaceholders(player, msg);
             getServer().broadcastMessage(msg);
             Bukkit.getScheduler().runTaskLater(this, () -> player.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage)), 2L);
 
@@ -85,9 +85,17 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        if (whitelistEnabled && !player.hasPermission("ddwhitelist.allowjoin")) {
+        if (whitelistEnabled && !(player.hasPermission(globalPerm) || player.hasPermission(serverPerm))) {
             e.setQuitMessage(null);
         }
+    }
+    
+    public String getGlobalPerm() {
+    	return globalPerm;
+    }
+    
+    public String getServerPerm() {
+    	return serverPerm;
     }
 }
 
@@ -121,6 +129,8 @@ class DDWhitelistCommand implements CommandExecutor {
                 Component status = Component.text("Whitelist is currently ", NamedTextColor.WHITE)
                         .append(Component.text(plugin.isWhitelistEnabled() ? "enabled" : "disabled", plugin.isWhitelistEnabled() ? NamedTextColor.GREEN : NamedTextColor.RED));
                 sender.sendMessage(status);
+                sender.sendMessage(Component.text("Per-Server permission: ", NamedTextColor.GRAY)
+                        .append(Component.text(plugin.getServerPerm(), NamedTextColor.YELLOW)));
                 break;
             case "reload":
                 plugin.reloadConfig();
@@ -129,7 +139,7 @@ class DDWhitelistCommand implements CommandExecutor {
                 break;
             case "help":
             default:
-                sender.sendMessage(Component.text("DDWhitelist Commands:", NamedTextColor.YELLOW));
+                sender.sendMessage(Component.text("Commands:", NamedTextColor.YELLOW));
                 sender.sendMessage(Component.text("/ddwhitelist on - Enable the whitelist", NamedTextColor.GREEN));
                 sender.sendMessage(Component.text("/ddwhitelist off - Disable the whitelist", NamedTextColor.GREEN));
                 sender.sendMessage(Component.text("/ddwhitelist status - Check whitelist status", NamedTextColor.GREEN));
