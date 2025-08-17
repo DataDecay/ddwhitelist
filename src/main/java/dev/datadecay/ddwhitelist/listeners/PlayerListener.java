@@ -23,9 +23,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        //plugin.getLogger().info(Boolean.toString(player.hasPermission(plugin.getGlobalPerm())));
-        //plugin.getLogger().info(Boolean.toString(player.hasPermission(plugin.getServerPerm())));
-        //plugin.getLogger().info(Boolean.toString(player.hasPermission(plugin.getTogglePerm())));
 
         if (plugin.isWhitelistEnabled() && !(player.hasPermission(plugin.getGlobalPerm()) || player.hasPermission(plugin.getServerPerm()))) {
             e.setJoinMessage(null);
@@ -33,12 +30,14 @@ public class PlayerListener implements Listener {
             msg = PlaceholderAPI.setPlaceholders(player, msg);
             Component componentMsg = LegacyComponentSerializer.legacyAmpersand().deserialize(msg);
             plugin.getServer().broadcast(componentMsg);
-            Bukkit.getScheduler().runTaskLater(this.plugin, () -> player.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(plugin.getKickMessage())), 2L);
+            Bukkit.getScheduler().runTaskLater(this.plugin, 
+                () -> player.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(plugin.getKickMessage())), 
+                2L
+            );
 
             plugin.getLogger().info(player.getName() + " is not whitelisted and tried to join!");
         }
     }
-
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {

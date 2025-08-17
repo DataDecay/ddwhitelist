@@ -1,7 +1,6 @@
 package dev.datadecay.ddwhitelist.commands;
 
 import dev.datadecay.ddwhitelist.DDWhitelist;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -28,7 +27,7 @@ public class DDWhitelistCommand implements CommandExecutor, TabCompleter {
     public DDWhitelistCommand(DDWhitelist plugin) {
         this.plugin = plugin;
     }
-    
+
     private void printVersion(CommandSender sender) {
         String version = plugin.getVersion(); 
         Component versionComponent;
@@ -47,7 +46,6 @@ public class DDWhitelistCommand implements CommandExecutor, TabCompleter {
                 .append(versionComponent));
     }
 
-    
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission(plugin.getTogglePerm())) {

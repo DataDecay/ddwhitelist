@@ -1,12 +1,12 @@
 package dev.datadecay.ddwhitelist;
 
-
 import dev.datadecay.ddwhitelist.commands.DDWhitelistCommand;
 import dev.datadecay.ddwhitelist.listeners.PlayerListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
 
 public final class DDWhitelist extends JavaPlugin implements Listener {
 
