@@ -24,19 +24,14 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
     private String kickMessage;
     private String serverName;
     private String globalPerm = "ddwhitelist.allowjoin";
-    private String serverPerm = "ddwhitelist.allowjoin"; // Set later, don't worry!
+    private String serverPerm = "ddwhitelist.allowjoin"; // Set later
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         loadConfigValues();
-
-        // Register command
         this.getCommand("ddwhitelist").setExecutor(new DDWhitelistCommand(this));
-
-        // Register events
         getServer().getPluginManager().registerEvents(this, this);
-
         getLogger().info("DDWhitelist enabled. Whitelist is " + (whitelistEnabled ? "enabled" : "disabled"));
     }
 
@@ -47,10 +42,24 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
 
     public void loadConfigValues() {
         FileConfiguration config = getConfig();
-        whitelistEnabled = config.getBoolean("whitelist-enabled", false);
-        whitelistMessage = config.getString("whitelist-message", "%player_name% tried to join but is not whitelisted!");
-        kickMessage = config.getString("kick-message", "This server is being worked on.");
-        serverName = config.getString("server-name", "survival");
+        if (!config.contains("whitelist-enabled")) {
+            config.set("whitelist-enabled", false);
+        }
+        whitelistEnabled = config.getBoolean("whitelist-enabled");
+        if (!config.contains("whitelist-message")) {
+            config.set("whitelist-message", "&c%player_name% tried to join but is not whitelisted!");
+        }
+        whitelistMessage = config.getString("whitelist-message");
+        if (!config.contains("kick-message")) {
+            config.set("kick-message", "This server is being worked on.");
+        }
+        kickMessage = config.getString("kick-message");
+        if (!config.contains("server-name")) {
+            config.set("server-name", "survival");
+        }
+        serverName = config.getString("server-name");
+        //end config portion
+        
         serverPerm = "ddwhitelist.allowjoin." + serverName;
     }
 
@@ -70,11 +79,10 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
         Player player = e.getPlayer();
         if (whitelistEnabled && !(player.hasPermission(globalPerm) || player.hasPermission(serverPerm))) {
             e.setJoinMessage(null);
-
-            // Replace placeholder
             String msg = whitelistMessage;
             msg = PlaceholderAPI.setPlaceholders(player, msg);
-            getServer().broadcastMessage(msg);
+            Component componentMsg = LegacyComponentSerializer.legacyAmpersand().deserialize(msg);
+            getServer().broadcast(componentMsg);
             Bukkit.getScheduler().runTaskLater(this, () -> player.kick(LegacyComponentSerializer.legacyAmpersand().deserialize(kickMessage)), 2L);
 
             getLogger().info(player.getName() + " is not whitelisted and tried to join!");

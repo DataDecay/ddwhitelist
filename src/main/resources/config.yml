@@ -1,4 +1,4 @@
 whitelist-enabled: false
-whitelist-message: "&c%player_name% tried to join but is not whitelisted!"
-kick-message: "&cThis server is being worked on."
+whitelist-message: "%player_name% tried to join but is not whitelisted!"
+kick-message: "This server is being worked on."
 server-name: "survival"
