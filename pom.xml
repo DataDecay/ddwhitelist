@@ -7,12 +7,13 @@
 
     <groupId>dev.datadecay</groupId>
     <artifactId>ddwhitelist</artifactId>
-    <version>2.1.5</version>
+    <version>2.2.0</version>
     <name>DDWhitelist</name>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <plugin.version>${project.version}</plugin.version>
     </properties>
 
     <repositories>
@@ -20,7 +21,7 @@
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
-         <repository>
+        <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
@@ -34,20 +35,20 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-         <groupId>me.clip</groupId>
-          <artifactId>placeholderapi</artifactId>
-          <version>2.11.6</version>
-         <scope>provided</scope>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
-    	<resources>
-        	<resource>
-            	<directory>src/main/resources</directory>
-            	<filtering>true</filtering>
-        	</resource>
-    	</resources>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering> <!-- enables ${plugin.version} replacement -->
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -65,4 +66,23 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <plugin.version>${project.version}-SNAPSHOT</plugin.version>
+                <version>${project.version}-SNAPSHOT</version>
+                <build.environment>development</build.environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <plugin.version>${project.version}</plugin.version>
+                <version>${project.version}</version>
+                <build.environment>production</build.environment>
+            </properties>
+        </profile>
+    </profiles>
 </project>

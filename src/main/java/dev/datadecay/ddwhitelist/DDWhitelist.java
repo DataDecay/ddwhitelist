@@ -2,6 +2,7 @@ package dev.datadecay.ddwhitelist;
 
 import dev.datadecay.ddwhitelist.commands.DDWhitelistCommand;
 import dev.datadecay.ddwhitelist.listeners.PlayerListener;
+import dev.datadecay.ddwhitelist.update.UpdateChecker;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -26,6 +27,7 @@ public final class DDWhitelist extends JavaPlugin implements Listener {
         this.getCommand("ddwhitelist").setExecutor(new DDWhitelistCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        new UpdateChecker(this).checkForUpdate();
         getLogger().info("DDWhitelist enabled. Whitelist is " + (whitelistEnabled ? "enabled" : "disabled"));
     }
 
