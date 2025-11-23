@@ -38,6 +38,12 @@ public class DDWhitelistCommand implements CommandExecutor, TabCompleter {
             String snapshot = version.substring(index - 1);
             versionComponent = Component.text("v" + main, NamedTextColor.AQUA)
                                         .append(Component.text(snapshot, NamedTextColor.RED));
+        } else if (version.contains("TL Build")) {
+            int index = version.indexOf("TL Build");
+            String main = version.substring(0, index - 1);
+            String snapshot = version.substring(index - 1);
+            versionComponent = Component.text("v" + main, NamedTextColor.AQUA)
+                                        .append(Component.text(snapshot, NamedTextColor.LIGHT_GREEN));
         } else {
             versionComponent = Component.text("v" + version, NamedTextColor.AQUA);
         }
