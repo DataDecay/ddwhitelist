@@ -7,7 +7,7 @@
 
     <groupId>dev.datadecay</groupId>
     <artifactId>ddwhitelist</artifactId>
-    <version>2.2.0</version>
+    <version>2.2.5</version>
     <name>DDWhitelist</name>
 
     <properties>
