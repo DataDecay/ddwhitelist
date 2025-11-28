@@ -43,7 +43,7 @@ public class DDWhitelistCommand implements CommandExecutor, TabCompleter {
             String main = version.substring(0, index - 1);
             String snapshot = version.substring(index - 1);
             versionComponent = Component.text("v" + main, NamedTextColor.AQUA)
-                                        .append(Component.text(snapshot, NamedTextColor.LIGHT_GREEN));
+                                        .append(Component.text(snapshot, NamedTextColor.GREEN));
         } else {
             versionComponent = Component.text("v" + version, NamedTextColor.AQUA);
         }
@@ -137,3 +137,4 @@ public class DDWhitelistCommand implements CommandExecutor, TabCompleter {
         insertGroup(group.subList(1, group.size()), child);
     }
 }
+
