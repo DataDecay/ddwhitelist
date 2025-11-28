@@ -25,7 +25,6 @@ public class PlayerListener implements Listener {
         Player player = e.getPlayer();
 
         if (plugin.isWhitelistEnabled() && !(player.hasPermission(plugin.getGlobalPerm()) || player.hasPermission(plugin.getServerPerm()))) {
-            e.setJoinMessage(null);
             String msg = plugin.getWhitelistMessage();
             msg = PlaceholderAPI.setPlaceholders(player, msg);
             Component componentMsg = LegacyComponentSerializer.legacyAmpersand().deserialize(msg);
@@ -47,5 +46,6 @@ public class PlayerListener implements Listener {
         }
     }
 }
+
 
 
