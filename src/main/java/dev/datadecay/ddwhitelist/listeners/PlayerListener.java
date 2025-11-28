@@ -21,7 +21,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
+    public void onPlayerLogin(PlayerLoginEvent e) {
         Player player = e.getPlayer();
 
         if (plugin.isWhitelistEnabled() && !(player.hasPermission(plugin.getGlobalPerm()) || player.hasPermission(plugin.getServerPerm()))) {
@@ -47,3 +47,4 @@ public class PlayerListener implements Listener {
         }
     }
 }
+
